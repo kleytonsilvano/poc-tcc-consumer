@@ -11,16 +11,15 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class TopicCustomerConsumer {
+public class TopicDepositWarehouseConsumer {
 
-    @Value("${topic.customer.register}")
+    @Value("${topic.warehouse.deposit}")
     private String topicName;
 
-    @KafkaListener(topics = "${topic.customer.register}")
+    @KafkaListener(topics = "${topic.warehouse.deposit}")
     public void consume(ConsumerRecord<String, String> payload){
         log.info("Tópico: {}", topicName);
         log.info(payload.value());
-
     }
 
 }
