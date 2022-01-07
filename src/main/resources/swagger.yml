@@ -1,0 +1,398 @@
+openapi: 3.0.0
+info:
+  title: Registration Information Module (MIC)
+  description: Registration Information Module
+  version: "1.0.0"
+servers:
+  - url: /api/mic-service/v1
+
+tags:
+  - name: Customer
+    description: Everything about customers
+  - name: Supplier
+    description: Everything about suppliers
+  - name: Warehouse
+    description: Everything about warehouses
+  - name: Merchandise
+    description: Everything about merchandises
+
+paths:
+  /customers:
+    get:
+      summary: Return customer list
+      operationId: findCustomers
+      tags:
+        - Customer
+      responses:
+        '200':
+          description: Return customer list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerModel'
+        '400':
+          description: Request error
+        '404':
+          description: Data not found
+        '500':
+          description: internal error
+
+    post:
+      summary: Register new customer
+      operationId: registerCustomer
+      tags:
+        - Customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerModel'
+      responses:
+        '201':
+          description: Successfully registered customer
+        '400':
+          description: Request error
+        '500':
+          description: internal error
+
+  /suppliers:
+    get:
+      summary: Return supplier list
+      operationId: findSuppliers
+      tags:
+        - Supplier
+      responses:
+        '200':
+          description: Return supplier list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupplierModel'
+        '400':
+          description: Request error
+        '404':
+          description: Data not found
+        '500':
+          description: internal error
+
+    post:
+      summary: Register new supplier
+      operationId: registerSupplier
+      tags:
+        - Supplier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierModel'
+      responses:
+        '201':
+          description: Successfully registered supplier
+        '400':
+          description: Request error
+        '500':
+          description: Internal error
+
+  /warehouses:
+    get:
+      summary: Returns list of warehouses that the merchandise traveled through
+      operationId: findWarehouse
+      tags:
+        - Warehouse
+      parameters:
+        - $ref: '#/components/parameters/x-id-merchandise'
+      responses:
+        '200':
+          description: Returns list of warehouses that the merchandise traveled through
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WarehouseModel'
+        '400':
+          description: Request error
+        '404':
+          description: Data not found
+        '500':
+          description: Internal error
+
+    post:
+      summary: Add new warehouse
+      operationId: addWarehouse
+      tags:
+        - Warehouse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseModel'
+      responses:
+        '201':
+          description: Warehouse registered successfully
+        '400':
+          description: Request error
+        '500':
+          description: Internal error
+
+  /warehouses/deposits:
+    post:
+      summary: Register deposit made in storage
+      operationId: registerDepositWarehouse
+      tags:
+        - Warehouse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositWarehouseModel'
+      responses:
+        '201':
+          description: Registered successfully
+        '400':
+          description: Request error
+        '500':
+          description: Internal error
+
+  /merchandises:
+    get:
+      summary: List of goods by customer with full warehouse information
+      operationId: findMerchandises
+      tags:
+        - Merchandise
+      parameters:
+        - $ref: '#/components/parameters/x-cpf-customer'
+      responses:
+        '200':
+          description: Return merchandises list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MerchandiseModel'
+        '400':
+          description: Request error
+        '404':
+          description: Data not found
+        '500':
+          description: Internal error
+
+    post:
+      summary: Register new merchandise
+      operationId: registerMerchandise
+      tags:
+        - Merchandise
+      parameters:
+        - $ref: '#/components/parameters/x-cnpj-supplier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandiseRequestModel'
+      responses:
+        '201':
+          description: Merchandise successfully registered
+        '400':
+          description: Request error
+        '500':
+          description: internal error
+
+  /merchandises/delivered:
+    put:
+      summary: Register merchandise as delivered
+      operationId: registerMerchandiseDelivered
+      tags:
+        - Merchandise
+      parameters:
+        - $ref: '#/components/parameters/x-id-merchandise'
+      responses:
+        '204':
+          description: Goods registered as successfully delivered
+        '400':
+          description: Request error
+        '500':
+          description: internal error
+
+
+components:
+
+  parameters:
+    x-id-merchandise:
+      name: x-id-merchandise
+      in: header
+      required: true
+      schema:
+        type: string
+
+    x-cnpj-supplier:
+      name: x-cnpj-supplier
+      in: header
+      required: true
+      schema:
+        type: string
+
+    x-cpf-customer:
+      name: x-cpf-customer
+      in: header
+      required: true
+      schema:
+        type: string
+
+  schemas:
+
+    CustomerModel:
+      title: CustomerModel
+      type: object
+      required:
+        - name
+        - cpf
+        - address
+        - telephone
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpf:
+          type: string
+        birthDate:
+          type: string
+          example: '2000-01-10T00:00:00'
+        address:
+          $ref: '#/components/schemas/AdressModel'
+        telephone:
+          type: string
+        email:
+          type: string
+    SupplierModel:
+      title: SupplierModel
+      type: object
+      required:
+        - name
+        - cnpj
+        - address
+        - telephone
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cnpj:
+          type: string
+        address:
+          $ref: '#/components/schemas/AdressModel'
+        telephone:
+          type: string
+        email:
+          type: string
+    AdressModel:
+      title: AdressModel
+      type: object
+      required:
+        - zipCode
+        - street
+        - number
+        - district
+        - city
+        - state
+      properties:
+        id:
+          type: integer
+        zipCode:
+          type: string
+        street:
+          type: string
+        number:
+          type: string
+        district:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+    DepositWarehouseModel:
+      title: DepositWarehouseModel
+      type: object
+      required:
+        - idMerchandise
+        - idWarehouse
+      properties:
+        idMerchandise:
+          type: integer
+        idWarehouse:
+          type: integer
+    WarehouseModel:
+      title: WarehouseModel
+      type: object
+      required:
+        - name
+        - address
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/AdressModel'
+        isActive:
+          type: boolean
+    MerchandiseRequestModel:
+      title: MerchandiseModel
+      type: object
+      required:
+        - customerCpf
+      properties:
+        value:
+          type: number
+        description:
+          type: string
+        customerCpf:
+          type: string
+    MerchandiseModel:
+      title: MerchandiseModel
+      type: object
+      required:
+        - customerCpf
+        - delivered
+        - idSupplier
+      properties:
+        id:
+          type: integer
+        idSupplier:
+          type: integer
+        value:
+          type: number
+        description:
+          type: string
+        customerCpf:
+          type: string
+        delivered:
+          type: boolean
+        arrivalForecast:
+          type: string
+          example: '2000-01-10T00:00:00'
+        deposits:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepositAddressModel'
+    DepositAddressModel:
+      title: WarehouseModel
+      type: object
+      required:
+        - city
+        - state
+      properties:
+        id:
+          type: integer
+        city:
+          type: string
+        state:
+          type: string
+        dateHour:
+          type: string
+          example: '2000-01-10T00:00:00'
