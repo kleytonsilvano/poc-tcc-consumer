@@ -9,7 +9,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 public class App {
 
     public static void main(String[] args) {
-        SpringApplication.run(tcc.poc.App.class, args);
+        SpringApplication.run(App.class, args);
     }
 
 }
