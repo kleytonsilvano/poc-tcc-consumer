@@ -1,16 +1,9 @@
 package tcc.poc.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tcc.poc.models.Customer;
-import tcc.poc.models.Deposit;
-import tcc.poc.models.Merchandise;
-import tcc.poc.models.Warehouse;
+import tcc.poc.models.*;
 import tcc.poc.models.enums.StatusMerchandise;
-import tcc.poc.utils.MockUtils;
-
-import java.util.Arrays;
-import java.util.List;
+import tcc.poc.models.vo.SupplierVO;
 
 /**
  *  Esta classe seria responsável por realizar todas integrações com o EIS
@@ -18,28 +11,31 @@ import java.util.List;
 @Service
 public class EisService {
 
-    @Autowired
-    private MockUtils mockUtils;
-
-    public List<Merchandise> findMerchandises(String xCpfCustomer) {
-        return Arrays.asList(mockUtils.createMockMerchandise(xCpfCustomer),
-                             mockUtils.createMockMerchandise2(xCpfCustomer));
+    public void registerDepositInWarehouse(Integer idMerchandise, Integer idWarehouse) {
+        //Cadastra o depósito da mercadoria no armazem
     }
-
-    public List<Deposit> findDepositByMerchandise(Integer codigoMerchandise) {
-        return Arrays.asList(mockUtils.createMockDeposit(codigoMerchandise), mockUtils.createMockDeposit2(codigoMerchandise));
-    }
-
 
     public StatusMerchandise getStatusMerchandise(Integer idMerchandise) {
         return StatusMerchandise.IN_TRANSIT;
     }
 
-    public List<Customer> findCustomers() {
-        return Arrays.asList(mockUtils.createMockCustomer(), mockUtils.createMockCustomer2(), mockUtils.createMockCustomer3());
+    public void registerCustomer(CustomerModel customerModel) {
+        //Cadastra um novo cliente
     }
 
-    public List<Warehouse> findWarehouseByIdMerchandise(String codigoMerchandise) {
-        return Arrays.asList(mockUtils.createMockWarehouse(codigoMerchandise), mockUtils.createMockWarehouse2(codigoMerchandise));
+    public void registerMerchandiseAsDelivered(String idMerchandise) {
+        //Registra mercadoria como entregue
+    }
+
+    public void registerMerchandise(MerchandiseModel merchandiseRequest, String cnpj) {
+        //Cadastra uma nova mercadoria cujo cnpj do fornecedor
+    }
+
+    public void registerSupplier(SupplierVO supplierVO) {
+        //Cadastra um novo fornecedor
+    }
+
+    public void registerWarehouse(WarehouseModel warehouseModel) {
+        //Cadastra um novo armazém
     }
 }
